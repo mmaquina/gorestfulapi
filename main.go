@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -51,10 +53,19 @@ func getAlbumByID(context *gin.Context) {
 }
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		// Set a default port if the variable is not set
+		port = "8080"
+		fmt.Println("PORT environment variable not set, using default:", port)
+	} else {
+		fmt.Println("Server will run on port:", port)
+	}
+
 	router := gin.Default()
 	router.GET("/albums", getAlbums)
 	router.GET("/albums/:id", getAlbumByID)
 	router.POST("/albums", postAlbum)
 
-	router.Run("localhost:8080")
+	router.Run("0.0.0.0:" + port)
 }
